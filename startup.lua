@@ -1,4 +1,4 @@
-version = "1.6.5" -- EVENT SYSTEM by Mevill
+version = "1.7.0" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
