@@ -3539,7 +3539,7 @@ allCommands = {
 		commands.exec('tellraw ' .. username .. ' ' .. text .. "]")
 	end,
 	["save"] = function(username, commandParts)
-		if (set.recruitsActive) then
+		if (set.recruitsActive and commandParts[1]) then
 			local saveName = commandParts[1]
 			local success, result = commands.exec('execute as ' .. username .. ' positioned ~ ~ ~ run data get entity @e[limit=1,sort=nearest,type=recruits:crossbowman]')
 			if (success) then
@@ -3573,7 +3573,7 @@ allCommands = {
 	end,
 	["spawn"] = function(username, commandParts)
 		local saveName = commandParts[1]
-		if (fs.exists("Recruits/" .. saveName .. ".txt") and set.recruitsActive) then
+		if (commandParts[1] and fs.exists("Recruits/" .. saveName .. ".txt") and set.recruitsActive) then
 			local userTeam = loggedUsers[getGovernmentID(username)][3]
 			local file = fs.open("Recruits/" .. saveName .. ".txt", "r")
 			local nbt = textutils.unserialize(file.readAll())
@@ -3599,10 +3599,15 @@ allCommands = {
 					local file = fs.open("Data/set.txt", "w")
 					file.write(textutils.serialize(set))
 					file.close()
+					return 'Spawned mob.', "green"
 				elseif (result and result[1]) then
 					return 'Failed to spawn: ' .. result[1] .. '.', "dark_red"
+				else 
+					return 'Failed to spawn: Unknown error.', "dark_red"
 				end
 			end
+		else
+			return 'Could not find profile.', "dark_red"
 		end
 	end,
 	["delete"] = function(username, commandParts)
