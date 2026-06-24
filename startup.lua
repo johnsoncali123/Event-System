@@ -29,7 +29,7 @@ ALL_CHAT_COMMANDS = [[# The following are chat commands.
 > `:load` Logs any new users into the system.
 > `:fix` Manually updates things which do not update automatically.
 > `:setspawn [nation name/spec]` Moves the spawn of a side to your position.
-> `:arty [x] [y (optional)] [z]` Sends an artillary bombardment to the location.
+> `:arty [x] [y (optional)] [z]` Sends an artillery bombardment to the location.
 > `:buy [block name]` Allows someone to buy blocks to repair their vehicles. 
 > `:save [profile name]` Saves the nearest recruit to your nation's database.
 > `:view` Shows all the recruit save files you can spawn.
@@ -99,69 +99,16 @@ local lookup = {
 	["team2"] = ""
 }
 local permaLog = {
-	["Mandus2000"] = {"104th", "GCT"},
-	["Un0Amm0B0X"] = {"501st", "SVQ", "CVQ"},
-	["Aron_Buler"] = {"3rd"},
-	["WhovianLuke"] = {"NA"},
-	["AVRaptor99"] = {"501st", "SVQ", "CVQ"},
-	["Asser606"] = {"104th"},
-	["CinnaminiMax"] = {"104th", "GCT", "SVQ"},
-	["JacobWitzell"] = {"104th", "GCT", "SVQ"},
-	["Mqnchy1010"] = {"2nd", "SVQ", "CVQ"},
-	["Musicarych"] = {"104th", "GCT", "SVQ"},
-	["NotDito_"] = {"2nd"},
-	["OtakuHp"] = {"104th", "GCT", "SVQ"},
-	["Tribulla"] = {"104th", "GCT", "SVQ"},
-	["topictheddlc123"] = {"UNK"},
-	["yacine_game_win"] = {"2nd", "GCT"},
-	["Xstikezero"] = {"1st"},
-	["beast10000"] = {"NA", "SVQ", "CVQ"},
-	["CrocblancYT3165"] = {"2nd", "SVQ", "CVQ", "HQ"},
-	["RAPTOR_T34"] = {"2nd"},
-	["contestings"] = {"NA"},
-	["Polish_Hussar10"] = {"501st", "GCT", "SVQ", "CVQ"},
-	["polikmaz09"] = {"1st"},
-	["Avrapator"] = {"501st", "SVQ", "CVQ"},
-	["ErwinEkiller"] = {"1st"},
-	["CzaroCzaruje4"] = {"1st"},
-	["MaxSlayer"] = {"1st"},
-	["DragoneKyt"] = {"1st"},
-	["Pablogamer25pYT"] = {"3rd"},
-	["enos696"] = {"NA"},
-	["Frozenfire13"] = {"2nd"},
-	["KnightCS"] = {"501st", "SVQ"},
-	["JungleRootTree"] = {"3rd", "GCT", "HQ"},
-	["Memosplays"] = {"3rd", "GCT"},
-	["IamA_Canadian"] = {"3rd", "GCT"},
-	["InvictusSouls"] = {"501st", "SVQ", "CVQ", "HQ"},
-	["9i9an"] = {"3rd", "GCT"},
-	["w1_0"] = {"7th", "HQ"},
-	["Skycon7375"] = {"7th"},
-	["VL0DIV0ST0K"] = {"501st"},
-	["Vihaan2012"] = {"104th"},
-	["GhastSand"] = {"104th"},
-	["C4_Tech342538"] = {"104th"},
-	["NocturneReaper"] = {"104th"},
-	["Invist"] = {"104th"},
-	["Juwen43"] = {"104th"},
-	["t1MBERCEAFT"] = {"104th"},
-	["DVTc00l"] = {"7th"},
-	["8WICHER8"] = {"7th", "GCT", "SVQ"},
-	["AdInVas"] = {"7th"},
-	["Gallus_"] = {"3rd", "GCT", "AQ"},
-	
+	-- Users
+	["AdInVas"] = {"NA"},
+
 	-- Admins
-	["skepsi00"] = {"3rd", "ADM"},
-	--["mrgreen2000"] = {"104th", "ADM"},
-	["Submarine824"] = {"3rd", "ADM"},
-	["CheezborgaXXL"] = {"501st", "ADM"},
-	["Doragonsodo"] = {"104th", "ADM"},
-	--["testmapVI"] = {"3rd", "ADM"},
-	["Czechia_"] = {"501st", "ADM"},
-	["ShrimpE_GOOB"] = {"3rd", "ADM"},
-	--["Capt_Brickbeard"] = {"7th", "ADM"},
-	["mevill"] = {"501st", "ADM"},
-	["DiehardTried"] = {"501st", "ADM"}
+	["skepsi00"] = {"NA", "ADM"},
+	["Doragonsodo"] = {"NA", "ADM"},
+	["Czechia_"] = {"NA", "ADM"},
+	["mevill"] = {"NA", "ADM"},
+	["DiehardTried"] = {"NA", "ADM"},
+	["Gallus_"] = {"NA", "ADM"}
 }
 local helpData = {
 	[1] = {{"Lock Teams", 'This function teleports everyone to their respective team chambers in the main spawn structure and then places walls to lock everyone in. It will also make it so nobody can change their team without Admin intervention.'},
@@ -497,7 +444,6 @@ local playerPos = {"", "", ""}
 local playerMode = ""
 local webhookIP = "https://discord.com/api/webhooks/1519075261021159575/R_qMCR0X8_S-FzaTgNS-IY9pZKacEoq2BwANv6cDJ-24UvG3BaUPYAx69zPL1Gjl_Z-T"
 local isShiftPressed = false
-local chatbox = peripheral.find("chatbox")
 local modem = peripheral.find("modem")
 local monitor = peripheral.find("monitor")
 modem.open(65530)
@@ -1025,6 +971,11 @@ function doMainMenu()
 		comms.goLine(1, 17)
 		comms.setColor(colors.gray)
 		comms.writeText("v" .. version .. "\nEvent System by Mevill")
+		if (not peripheral.find("chatBox")) then
+			comms.goLine(1, 15)
+			comms.setColor(colors.red)
+			comms.writeText("*Chatbox Not Detected: No Chat Commands!")
+		end
 		local input = 0
 		local helpMode = false
 		while (input < 1 or input > 10) do
@@ -2584,22 +2535,24 @@ function drawName(userID)
 		comms.setBackground(colors.blue)
 	end
 	comms.setColor(colors.black)
-	comms.writeText(loggedUsers[userID][1])
-	if (permaLog[loggedUsers[userID][1]]) then
-		if (permaLog[loggedUsers[userID][1]][1] ~= "NA") then
-			comms.writeText(" [" .. permaLog[loggedUsers[userID][1]][1] .. "]")
+	local userName = loggedUsers[userID][1]
+	comms.writeText(userName)
+	if (permaLog[userName]) then
+		local marker = permaLog[userName][1]
+		if (marker ~= "NA") then
+			comms.writeText(" [" .. marker .. "]")
 		end
 		comms.setBackground(colors.black)
 		comms.setColor(colors.orange)
 		comms.writeText(" (" .. loggedUsers[userID][2] .. ") ")
 		comms.setBackground(colors.cyan)
 		comms.setColor(colors.black)
-		for i = 2, #permaLog[loggedUsers[userID][1]] do
+		for i = 2, #permaLog[userName] do
 			if (i == 2) then
 				comms.writeText("{")
 			end
-			comms.writeText(permaLog[loggedUsers[userID][1]][i])
-			if (i ~= #permaLog[loggedUsers[userID][1]]) then
+			comms.writeText(permaLog[userName][i])
+			if (i ~= #permaLog[userName]) then
 				comms.writeText(",")
 			else
 				comms.writeText("}")
