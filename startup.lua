@@ -1,4 +1,4 @@
-version = "1.7.0" -- EVENT SYSTEM by Mevill
+version = "1.7.1" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
@@ -1706,6 +1706,14 @@ local settingFunctions = {
 	[29] = function(passData)
 		set.spawnRoundWait = not set.spawnRoundWait
 		return 1
+	end,
+	[30] = function(passData)
+		if (set.lobbyName == "Skepsis") then 
+			set.lobbyName = "Mevills"
+		else
+			set.lobbyName = "Skepsis"
+		end
+		return 1
 	end
 }
 
@@ -1729,6 +1737,11 @@ function settingsMenu()
 		-- Option format: (referenceID, type, string name, extra data)
 		if (settingsPageID == 1) then
 			addOption(7, 2, {"Counting Respawns", "Counting Cap Points", "Counting Rounds"}, set.teamTicketType)
+			if (set.lobbyName == "Mevills") then
+				addOption(30, 2, {"Use Mevills Map", "Use Skepsis Map"}, 1)
+			else
+				addOption(30, 2, {"Use Mevills Map", "Use Skepsis Map"}, 2)
+			end
 			if (set.teamTicketType == 3) then
 				addOption(27, 1, "Roundstart Spawn Swap", set.roundSpawnSwap)
 				addOption(29, 1, "Roundstart Spawn Protection", set.spawnRoundWait)
@@ -3298,7 +3311,7 @@ allCommands = {
 	["lock"] = function(username, commandParts)
 		lockSpawns()
 		resetMenu = true
-		return "Spawned locked.", "green"
+		return "Spawns locked.", "green"
 	end,
 	["unlock"] = function(username, commandParts)
 		unlockSpawns()
