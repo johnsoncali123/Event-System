@@ -1,4 +1,4 @@
-version = "1.7.1" -- EVENT SYSTEM by Mevill
+version = "1.7.2" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
@@ -28,6 +28,7 @@ ALL_CHAT_COMMANDS = [[# The following are chat commands.
 > `:auth [name]` Let's a person use chat commands.
 > `:load` Logs any new users into the system.
 > `:fix` Manually updates things which do not update automatically.
+> `:say [message]` Outputs a message as the event system.
 > `:setspawn [nation name/spec]` Moves the spawn of a side to your position.
 > `:arty [x] [y (optional)] [z]` Sends an artillery bombardment to the location.
 > `:buy [block name]` Allows someone to buy blocks to repair their vehicles. 
@@ -443,6 +444,7 @@ local lastPlayer = ""
 local playerPos = {"", "", ""}
 local playerMode = ""
 local webhookIP = "https://discord.com/api/webhooks/1519075261021159575/R_qMCR0X8_S-FzaTgNS-IY9pZKacEoq2BwANv6cDJ-24UvG3BaUPYAx69zPL1Gjl_Z-T"
+local commanderIP = "https://event-system-bot.onrender.com/command"
 local isShiftPressed = false
 local modem = peripheral.find("modem")
 local monitor = peripheral.find("monitor")
@@ -2847,6 +2849,7 @@ function startGame()
 	set.gameBegun = true
 	editBossbar(2)
 	save()
+	sendLog()
 end
 
 function relativePos(relX, relY, relZ)
@@ -3730,6 +3733,17 @@ allCommands = {
 		)
 		editBossbar(2)
 		return "Attempted to fix stuck issues.", "green"
+	end,
+	["say"] = function(username, commandParts)
+		local message = ""
+		for i = 1, #commandParts do 
+			message = message .. " " .. commandParts[i]
+		end		
+		if (message ~= "") then
+			commands.exec('tellraw @a [{"text":"Event System:","bold":true,"color":"dark_aqua"},{"text":"' .. message .. '","bold":false,"color":"gold"}]')
+		else
+			return "You must add a message.", "dark_red"
+		end
 	end
 }
 
@@ -4133,11 +4147,57 @@ function logging()
 			update(body)
 		end
 	end
-	if (not set.gameBegun) then
-		repeat
-			sleep(2)
-		until(set.gameBegun)
-		sendLog()
+	if (not http.checkURL(commanderIP)) then
+		sendToDiscord("## Warning: Event System cannot connect to EventControl bot.")
+	end
+	while (true) do
+		local result = http.get(commanderIP)
+		if (result) then
+			local data = textutils.unserializeJSON(result.readAll())
+			if (data) then
+				local username = "";
+				message = string.lower(data.command)
+				local commandName = string.sub(message, 1, #message)
+				local commandParts = {}
+				for i = 1, #message do
+					if (string.sub(message, i, i) == " ") then
+						commandName = string.sub(message, 1, (i - 1))
+						local positionCounter = i + 1
+						local counterSavedPosition = positionCounter
+						while (positionCounter <= #message) do
+							if (string.sub(message, positionCounter, positionCounter) == " ") then
+								commandParts[#commandParts + 1] = string.sub(message, counterSavedPosition, (positionCounter - 1))
+								counterSavedPosition = positionCounter + 1
+							end
+							positionCounter = positionCounter + 1
+						end
+						if (string.sub(message, counterSavedPosition, counterSavedPosition) == "+") then 
+							username = string.sub(message, counterSavedPosition + 1, #message)
+						else
+							commandParts[#commandParts + 1] = string.sub(message, counterSavedPosition, #message)
+						end
+						break
+					end
+				end
+				if (allCommands[commandName]) then
+					local response, color = allCommands[commandName](username, commandParts)
+					local commandLog = "**<" .. data.user .. ">** ran `" .. ":" .. commandName
+					for i = 1, #commandParts do
+						commandLog = commandLog .. " " .. commandParts[i]
+					end
+					if (response) then
+						commandLog = commandLog .. "` **==>** " .. response
+					else
+						commandLog = commandLog .. "` **==>** no detail."
+					end
+					commandLog = commandLog .. "\n-# This command was ran remotely."
+					sendToDiscord(commandLog)
+				else
+					sendToDiscord("**<" .. data.user .. ">** ran a command that does not exist.\n-# This command was ran remotely.")
+				end
+			end
+		end
+		sleep(1)
 	end
 end
 
