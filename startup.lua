@@ -1691,9 +1691,9 @@ function settingsMenu()
 		if (settingsPageID == 1) then
 			addOption(7, 2, {"Counting Respawns", "Counting Cap Points", "Counting Rounds"}, set.teamTicketType)
 			if (set.lobbyName == "Mevills") then
-				addOption(30, 2, {"Use Mevills Lobby", "Use Skepsis Lobby"}, 1)
+				addOption(30, 2, {"Use Mevills Map", "Use Skepsis Map"}, 1)
 			else
-				addOption(30, 2, {"Use Mevills Lobby", "Use Skepsis Lobby"}, 2)
+				addOption(30, 2, {"Use Mevills Map", "Use Skepsis Map"}, 2)
 			end
 			if (set.teamTicketType == 3) then
 				addOption(27, 1, "Roundstart Spawn Swap", set.roundSpawnSwap)
@@ -4192,6 +4192,8 @@ function logging()
 					end
 					commandLog = commandLog .. "\n-# This command was ran remotely."
 					sendToDiscord(commandLog)
+				else if (commandName == "runCheck") then
+					sendToDiscord("Event System running.")
 				else
 					sendToDiscord("**<" .. data.user .. ">** ran a command that does not exist.\n-# This command was ran remotely.")
 				end
