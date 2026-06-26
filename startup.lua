@@ -1,4 +1,4 @@
-version = "1.7.2" -- EVENT SYSTEM by Mevill
+version = "1.7.3" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
@@ -4192,7 +4192,7 @@ function logging()
 					end
 					commandLog = commandLog .. "\n-# This command was ran remotely."
 					sendToDiscord(commandLog)
-				else if (commandName == "runCheck") then
+				elseif (commandName == "runCheck") then
 					sendToDiscord("Event System running.")
 				else
 					sendToDiscord("**<" .. data.user .. ">** ran a command that does not exist.\n-# This command was ran remotely.")
