@@ -4133,7 +4133,10 @@ function update(body)
 		if (input == 3) then
 			pasteFile("startup.lua", body)
 			term.clear()
-			error("Please restart the computer for the update to take effect.", 0)
+			comms.setColor(colors.red)
+			comms.printText("Restarting Computer...")
+			sleep(0.3)
+			os.reboot()
 		end
 		updatePause = false
 		resetMenu = false
