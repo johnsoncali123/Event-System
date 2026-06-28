@@ -1825,7 +1825,9 @@ function settingsMenu()
 					end
 				end
 			end
-			settingsPageID = settingFunctions[setting](passData)
+			if (settingFunctions[setting]) then
+				settingsPageID = settingFunctions[setting](passData)
+			end
 		end
 	end
 end
