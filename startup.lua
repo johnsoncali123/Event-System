@@ -1,4 +1,4 @@
-version = "1.7.4" -- EVENT SYSTEM by Mevill
+version = "1.7.5" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
@@ -28,6 +28,7 @@ ALL_CHAT_COMMANDS = [[# The following are chat commands.
 > `:auth [name]` Let's a person use chat commands.
 > `:load` Logs any new users into the system.
 > `:fix` Manually updates things which do not update automatically.
+> `:forceupdate` Forcefully updates the event system code to the newest version.
 > `:say [message]` Outputs a message as the event system.
 > `:setspawn [nation name/spec]` Moves the spawn of a side to your position.
 > `:arty [x] [y (optional)] [z]` Sends an artillery bombardment to the location.
@@ -3749,6 +3750,18 @@ allCommands = {
 			commands.exec('tellraw @a [{"text":"Event System:","bold":true,"color":"dark_aqua"},{"text":"' .. message .. '","bold":false,"color":"gold"}]')
 		else
 			return "You must add a message.", "dark_red"
+		end
+	end,
+	["forceupdate"] = function(username, commandParts)
+		gate, err = http.get("https://raw.githubusercontent.com/johnsoncali123/Event-System/refs/heads/main/startup.lua")
+		if (gate) then
+			local success, body = pcall(function() return gate.readAll() end)
+			if (success and publicBuild) then
+				body = gate.readAll()
+				file = fs.open("startup.lua","w")
+				file.write(body)
+				file.close()
+			end
 		end
 	end
 }
