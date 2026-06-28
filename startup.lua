@@ -431,7 +431,7 @@ local gamemodeTable = {
 	["2"] = "adventure", 
 	["3"] = "spectator"
 }
-local confirmations = {"i'm sure", "yes", "sure", "ok", "okay", "yep", "yeah", "ye", "yea", "alright", "mhm", "bet", "aight", "im sure", "confirm", "ong", "indeed", "roger", "aye", "true", "fine"}
+local confirmations = {"y", "i'm sure", "yes", "sure", "ok", "okay", "yep", "yeah", "ye", "yea", "alright", "mhm", "bet", "aight", "im sure", "confirm", "ong", "indeed", "roger", "aye", "true", "fine"}
 local recruits = {}
 local kitData = {}
 local addonMetaData = {}
