@@ -3761,6 +3761,8 @@ allCommands = {
 				file = fs.open("startup.lua","w")
 				file.write(body)
 				file.close()
+				os.reboot()
+				error("Warning, system improperly restarted.", 0)
 			end
 		end
 	end
