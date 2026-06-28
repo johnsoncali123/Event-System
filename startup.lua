@@ -3500,26 +3500,30 @@ allCommands = {
 		end
 	end,
 	["setspawn"] = function(username, commandParts)
-		local userX, userY, userZ = getPlayerPos(username)
-		local newSpawn = tostring(math.floor(tonumber(userX))) .. " " .. tostring(math.floor(tonumber(userY))) .. " " .. tostring(math.floor(tonumber(userZ)))
-		local selectTeam = commandParts[1]
-		local output = "", ""
-		if (selectTeam == string.lower(set.team1)) then
-			spawns[1] = newSpawn 
-			output = {'Changed the spawn location for ' .. set.team1 .. '.', "green"}
-		elseif (selectTeam == string.lower(set.team2)) then
-			spawns[2] = newSpawn
-			output = {'Changed the spawn location for ' .. set.team2 .. '.', "green"}
-		elseif (selectTeam == "spec" or selectTeam == "spectator" or selectTeam == "spectators") then
-			spawns[3] = newSpawn
-			output = {'Changed the spawn location for spectators.', "green"}
+		if (loggedUsers[getGovernmentID(username)]) then
+			local userX, userY, userZ = getPlayerPos(username)
+			local newSpawn = tostring(math.floor(tonumber(userX))) .. " " .. tostring(math.floor(tonumber(userY))) .. " " .. tostring(math.floor(tonumber(userZ)))
+			local selectTeam = commandParts[1]
+			local output = "", ""
+			if (selectTeam == string.lower(set.team1)) then
+				spawns[1] = newSpawn 
+				output = {'Changed the spawn location for ' .. set.team1 .. '.', "green"}
+			elseif (selectTeam == string.lower(set.team2)) then
+				spawns[2] = newSpawn
+				output = {'Changed the spawn location for ' .. set.team2 .. '.', "green"}
+			elseif (selectTeam == "spec" or selectTeam == "spectator" or selectTeam == "spectators") then
+				spawns[3] = newSpawn
+				output = {'Changed the spawn location for spectators.', "green"}
+			else
+				output = {'Error, invalid command format.', "dark_red"}
+			end
+			local file = fs.open("Data/spawns.txt", "w")
+			file.write(textutils.serialize(spawns))
+			file.close()
+			return output[1], output[2]
 		else
-			output = {'Error, invalid command format.', "dark_red"}
+			return 'You are not logged in the system.', "dark_red"
 		end
-		local file = fs.open("Data/spawns.txt", "w")
-		file.write(textutils.serialize(spawns))
-		file.close()
-		return output[1], output[2]
 	end,
 	["help"] = function(username, commandParts)
 		commands.exec('tellraw ' .. username .. ' [{"text":"The following are all chat commands you can run:","bold":true,"color":"dark_aqua"},{"text":"' .. ALL_CHAT_COMMANDS .. '","bold":false,"color":"gold"}]')
