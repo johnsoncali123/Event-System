@@ -1,4 +1,4 @@
-version = "1.7.5" -- EVENT SYSTEM by Mevill
+version = "1.7.6" -- EVENT SYSTEM by Mevill
 publicBuild = true
 -- THIS IS THE MAIN COMPUTER, INSTRUCTIONS:
 
@@ -2991,7 +2991,7 @@ function deathCheck()
 						end
 					else
 						loggedUsers[#loggedUsers + 1] = {deadPlayerName, "RF", set["team" .. tostring(math.random(1, 2))]}
-						local deadPlayer = #loggedUsers
+						deadPlayer = #loggedUsers
 						commands.exec("tag " .. loggedUsers[deadPlayer][1] .. " add " .. loggedUsers[deadPlayer][3])
 						parallel.waitForAll(
 							function() reKit(false, deadPlayer) end,
